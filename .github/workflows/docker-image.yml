@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
@@ -23,7 +23,7 @@ jobs:
         password: ${{ secrets.secret }}
 
     - name: Build and push Docker image
-      uses: docker/build-push-action@v2cd 
+      uses: docker/build-push-action@v2
       with:
         context: .
         push: true
