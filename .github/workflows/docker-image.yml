@@ -46,7 +46,7 @@ jobs:
         sudo apt-get install -y trivy
 
     - name: Scan Docker image with Trivy
-      run: trivy image ${{ secrets.name }}/compasstreinamento:latest
+      run: trivy image ${{ secrets.name }}/cprojetocompass:latest
 
   trigger-helm-update:
     runs-on: ubuntu-latest
@@ -58,5 +58,5 @@ jobs:
         repository: julianobcgato/helm-repo
         token: ${{ secrets.gittoken }}
         event-type: update-helm
-        client-payload: '{"docker_image": "${{ secrets.secret }}/compasstreinamento:latest"}'
+        client-payload: '{"docker_image": "${{ secrets.secret }}/projetocompass:latest"}'
 
