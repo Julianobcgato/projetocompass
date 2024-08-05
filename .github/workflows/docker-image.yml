@@ -20,10 +20,10 @@ jobs:
       uses: docker/login-action@v1
       with:
         username: ${{ secrets.name }}
-        password: ${{ secrets.secrect }}
+        password: ${{ secrets.secret }}
 
     - name: Build and push Docker image
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v2cd 
       with:
         context: .
         push: true
@@ -31,3 +31,15 @@ jobs:
 
     - name: Log out from Docker Hub
       run: docker logout
+
+    - name: Install Trivy
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+        echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+        sudo apt-get update
+        sudo apt-get install -y trivy
+
+    - name: Scan Docker image with Trivy
+      run: trivy image ${{ secrets.name }}/compasstreinamento:latest
