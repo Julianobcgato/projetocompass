@@ -49,26 +49,30 @@ jobs:
       run: trivy image ${{ secrets.name }}/compasstreinamento:latest
 
   alterar_tag:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout repository
-         uses: actions/checkout@v3
-         with:
-           repository: juliano/projetocompass
-           token: ${{ secrets.bcgatotoken }}
-           clean: true
-           fetch-depth: 1
+   runs-on: ubuntu-latest
+   steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        repository: juliano/projetocompass
+        token: ${{ secrets.bcgatotoken }}  
+        clean: true
+        fetch-depth: 1
+        fetch-tags: false
+        lfs: false
+        submodules: false
+        set-safe-directory: true
 
-       - name: Modify yaml File
-         run: |
-           sed -i 's/main/v.1.0/g' ./julianoapi/values.yaml
+    - name: Modify yaml File
+      run: |
+        sed -i 's/main/v.1.0/g' ./julianoapi/values.yaml
 
-       - name: Commit and Push Changes
-         run: |
-           git config user.name "julianobcgato"
-           git config user.email "julianobcgato@gmail.com"
-           git add ./julianoapi/values.yaml
-           git commit -m "Update image name in yaml file"
-           git push
+    - name: Commit and Push Changes
+      run: |
+        git config user.name "julianobcgato"
+        git config user.email "julianobcgato@gmail.com"
+        git add ./julianoapi/values.yaml
+        git commit -m "Update image name in yaml file" || echo "No changes to commit"
+        git push
 
 
