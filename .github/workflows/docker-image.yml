@@ -1,37 +1,64 @@
-name: Build and Push Docker Image
+name: CI/CD Pipeline
 
 on:
   push:
+    paths-ignore:
+      - '**.md'
     branches:
-      - master
+      - master  
+  release:
+    types: [created]
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-3.8
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
 
-    - name: Log in to GitHub Container Registry
-      uses: docker/login-action@v1
-      with:
-        registry: ghcr.io
-        username: ${{ secrets.namegt }}
-        password: ${{ secrets.secretgt }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfile 
+          push: true
+          tags: ghcr.io/${{ secrets.namer }}/projetocompass:${{ github.run_number }}
+          load: false
+          no-cache: false
+          pull: false
+          github-token: ${{ secrets.secretgt }}
 
-    - name: Build and push Docker image to GHCR
-      uses: docker/build-push-action@v2
-      with:
-        context: ./path/to/your/dockerfiles
-        push: true
-        tags: ghcr.io/${{ secrets.namegt }}/projetocompass:latest
+  alterar_tag:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          repository: juliano/projetocompass  # Ajuste para o nome do repositório correto
+          token: ${{ secrets.secretgt }}
 
-    - name: Log out from GHCR
-      run: docker logout ghcr.io
+      - name: Set run number
+        run: echo "RUN_NUMBER=${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Modify yaml File
+        run: |
+          sed -i "s/^      tag: .*/      tag: $RUN_NUMBER/" ./julianoapi/values.yaml  # Ajuste o caminho para o arquivo correto
+
+      - name: Cat values.yaml to verify changes
+        run: cat ./julianoapi/values.yaml  # Ajuste o caminho para o arquivo correto
+
+      - name: Commit and Push Changes
+        run: |
+          git config user.name "Juliano"
+          git config user.email "julianobcgato@gmail.com"
+          git add ./julianoapi/values.yaml  # Ajuste o caminho para o arquivo correto
+          git commit -m "Update image tag in values.yaml"
+          git push
 
 
 
