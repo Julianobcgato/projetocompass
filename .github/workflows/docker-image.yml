@@ -13,7 +13,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
-        repository: juliano/projetocompass
+        repository: julianobcgato/projetocompass
         token: ${{ secrets.tk }}  # Certifique-se de que está usando o secret correto
         clean: true
         fetch-depth: 1
@@ -65,7 +65,7 @@ jobs:
       with:
          context: .
          push: true
-         tags: julianobcgato/projetocompass001:v.1.0
+         tags: julianobcgato/projetocompass:v.1.0
          
   alterar_tag:
     runs-on: ubuntu-latest
@@ -73,8 +73,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          repository: juliano/projetocompass
-          token: ${{ secrets.tk }}  # Adicione isso se estiver acessando um repositório privado
+          repository: julianobcgato/projetocompass
+          token: ${{ secrets.tk }}  # Certifique-se de que está usando o secret correto
           clean: true
           fetch-depth: 1
           fetch-tags: false
@@ -84,13 +84,14 @@ jobs:
 
       - name: Modify yaml File
         run: |
-          sed -i 's/main/v.1.0/g' ./julianoapi/values.yaml
+          sed -i 's/main/v.1.0/g' ./project/values.yaml
 
       - name: Commit and Push Changes
         run: |
           git config user.name "julianobcgato"
           git config user.email "julianobcgato@gmail.com"
-          git add ./julianoapi/values.yaml
+          git add ./project/values.yaml
           git commit -m "Update image name in yaml file"
           git push
+
 
