@@ -55,7 +55,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: juliano/projetocompass
-        token: ${{ secrets.bcgatotoken }}  
+        token: ${{ secrets.tk }}  
         clean: true
         fetch-depth: 1
         fetch-tags: false
