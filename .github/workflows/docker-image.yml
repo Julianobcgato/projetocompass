@@ -55,7 +55,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: juliano/projetocompass
-        token: ${{ secrets.gittoken }}  
+        token: ${{ secrets.token }}  
 
     - name: Modify yaml File
       run: |
