@@ -30,7 +30,7 @@ jobs:
           load: false
           no-cache: false
           pull: false
-          github-token: ${{ secrets.secret }}
+          github-token: ${{ secrets.bcgatotoken }}
 
   alterar_tag:
     runs-on: ubuntu-latest
