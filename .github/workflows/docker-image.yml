@@ -1,4 +1,4 @@
-name: Build, Push Docker Image, Scan, and Trigger Helm Update
+name: Build, Push Docker Image and Scan
 
 on:
   push:
@@ -46,17 +46,4 @@ jobs:
         sudo apt-get install -y trivy
 
     - name: Scan Docker image with Trivy
-      run: trivy image ${{ secrets.name }}/cprojetocompass:latest
-
-  trigger-helm-update:
-    runs-on: ubuntu-latest
-    needs: scan
-    steps:
-    - name: Trigger Helm Update Workflow
-      uses: peter-evans/repository-dispatch@v3
-      with:
-        repository: julianobcgato/helm-repo
-        token: ${{ secrets.gittoken }}
-        event-type: update-helm
-        client-payload: '{"docker_image": "${{ secrets.secret }}/projetocompass:latest"}'
-
+      run: trivy image ${{ secrets.name }}/compasstreinamento:latest
