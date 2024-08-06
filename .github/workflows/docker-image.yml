@@ -25,7 +25,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: projetocompass  
+          context: ./projetocompass  
           push: true
           tags: ghcr.io/julianobcgato/projetocompass:${{ github.run_number }} 
           load: false
