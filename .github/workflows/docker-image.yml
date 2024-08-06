@@ -23,14 +23,15 @@ jobs:
         username: ${{ secrets.namegt }}
         password: ${{ secrets.secretgt }}
 
-    - name: Build and push Docker image
+    - name: Build and push Docker image to GHCR
       uses: docker/build-push-action@v2
       with:
-        context: ./julianopai
+        context: ./path/to/your/dockerfiles
         push: true
         tags: ghcr.io/${{ secrets.namegt }}/projetocompass:latest
 
     - name: Log out from GHCR
       run: docker logout ghcr.io
+
 
 
