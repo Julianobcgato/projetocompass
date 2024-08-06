@@ -5,7 +5,7 @@ on:
     paths-ignore:
       - '**.md'
     branches:
-      - master  
+      - master
   release:
     types: [created]
 
@@ -25,7 +25,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: ./dockerfile 
+          context: ./projetocompass  
           push: true
           tags: ghcr.io/${{ secrets.namer }}/projetocompass:${{ github.run_number }}
           load: false
@@ -40,7 +40,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: juliano/projetocompass  # Ajuste para o nome do repositório correto
+          repository: julianobcgato/projetocompass  
           token: ${{ secrets.secretgt }}
 
       - name: Set run number
@@ -48,18 +48,20 @@ jobs:
 
       - name: Modify yaml File
         run: |
-          sed -i "s/^      tag: .*/      tag: $RUN_NUMBER/" ./julianoapi/values.yaml  # Ajuste o caminho para o arquivo correto
+          sed -i "s/^      tag: .*/      tag: $RUN_NUMBER/" ./julianoapi/values.yaml  # Caminho para o arquivo values.yaml
 
       - name: Cat values.yaml to verify changes
-        run: cat ./julianoapi/values.yaml  # Ajuste o caminho para o arquivo correto
+        run: cat ./julianoapi/values.yaml  
 
       - name: Commit and Push Changes
         run: |
           git config user.name "Juliano"
           git config user.email "julianobcgato@gmail.com"
-          git add ./julianoapi/values.yaml  # Ajuste o caminho para o arquivo correto
+          git add ./julianoapi/values.yaml  # Caminho para o arquivo values.yaml
           git commit -m "Update image tag in values.yaml"
           git push
+
+
 
 
 
