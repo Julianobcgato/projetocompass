@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3  
+      uses: actions/checkout@v3
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
@@ -19,18 +19,34 @@ jobs:
     - name: Log in to Docker Hub
       uses: docker/login-action@v1
       with:
-        username: ${{ secrets.name }}  # Ajuste conforme o nome do segredo
-        password: ${{ secrets.secret }}  # Ajuste conforme o nome do segredo
+        username: ${{ secrets.name }}
+        password: ${{ secrets.secret }}
 
-    - name: Build and push Docker image
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ secrets.name }}
+        password: ${{ secrets.secret }}
+
+    - name: Build and push Docker image to Docker Hub
       uses: docker/build-push-action@v2
       with:
         context: .
         push: true
         tags: ${{ secrets.name }}/compasstreinamento:latest
 
-    - name: Log out from Docker Hub
-      run: docker logout
+    - name: Build and push Docker image to GHCR
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ghcr.io/${{ secrets.name }}/projetocompass:latest
+
+    - name: Log out from Docker Hub and GHCR
+      run: |
+        docker logout
+        docker logout ghcr.io
 
   scan:
     runs-on: ubuntu-latest
@@ -46,7 +62,7 @@ jobs:
         sudo apt-get install -y trivy
 
     - name: Scan Docker image with Trivy
-      run: trivy image ${{ secrets.name }}/compasstreinamento:latest
+      run: trivy image ghcr.io/${{ secrets.name }}/projetocompass:latest
 
   alterar_tag:
     runs-on: ubuntu-latest
@@ -55,16 +71,17 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: juliano/projetocompass
-        token: ${{ secrets.bctoken }}  # Ajuste para o nome do segredo correto
+        token: ${{ secrets.tk }}
 
     - name: Modify yaml File
       run: |
-        sed -i 's/main/v.1.0/g' ./julianoapi/values.yaml
+        sed -i 's/main/v1.0/g' ./julianoapi/values.yaml
 
     - name: Commit and Push Changes
       run: |
         git config user.name "nm"
         git config user.email "julianobcgato@gmail.com"
         git add ./julianoapi/values.yaml
-        git commit -m "Update image name in md file"
+        git commit -m "Update image name in yaml file"
         git push
+
