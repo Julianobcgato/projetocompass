@@ -46,12 +46,15 @@ jobs:
       - name: Set run number
         run: echo "RUN_NUMBER=${{ github.run_number }}" >> $GITHUB_ENV
 
+      - name: Cat deployment.yaml to verify changes
+        run: cat ./gitops/deployment.yaml
+
+      - name: ls deployment.yaml to verify changes
+        run: ls 
+        
       - name: Modify yaml File
         run: |
           sed -i "s/^        image: .*/        image: julianobcgato/projetocompass:$RUN_NUMBER/" ./gitops/deployment.yaml
-
-      - name: Cat deployment.yaml to verify changes
-        run: cat ./gitops/deployment.yaml
 
       - name: Commit and Push Changes
         run: |
