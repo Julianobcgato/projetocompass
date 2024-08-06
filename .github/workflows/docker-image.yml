@@ -47,3 +47,31 @@ jobs:
 
     - name: Scan Docker image with Trivy
       run: trivy image ${{ secrets.name }}/compasstreinamento:latest
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+         context: .
+         push: true
+         tags: endi7/fastapi001:v.1.0
+         
+  alterar_tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          repository: juliano/projetocompass
+          token: ${{ secrets.gittoken }}
+
+      - name: Modify yaml File
+        run: |
+          sed -i 's/main/v.1.0/g' ./julianoapi/values.yaml
+
+      - name: Commit and Push Changes
+        run: |
+          git config user.name "nm"
+          git config user.email "julianobcgato@gmail.com"
+          git add ./julianoapi/values.yaml
+          git commit -m "Update image name in md file"
+          git push
