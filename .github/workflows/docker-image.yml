@@ -48,7 +48,7 @@ jobs:
 
       - name: Modify yaml File
         run: |
-          sed -i "s/^        image:.*/        image:julianobcgato/projetocompass:$RUN_NUMBER/" ./gitops/deployment.yaml
+          sed -i "s/^        image: .*/        image: julianobcgato/projetocompass:$RUN_NUMBER/" ./gitops/deployment.yaml
 
       - name: Cat deployment.yaml to verify changes
         run: cat ./gitops/deployment.yaml
