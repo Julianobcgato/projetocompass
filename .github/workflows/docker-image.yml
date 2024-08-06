@@ -13,7 +13,6 @@ jobs:
   build-and-push:
     runs-on: ubuntu-22.04
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -25,13 +24,13 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: ./projetocompass
           push: true
-          tags: ghcr.io/${{ secrets.namegt }}/projetocompass:${{ github.run_number }} 
+          tags: ghcr.io/julianobcgato/projetocompass:${{ github.run_number }}
           load: false
-           no-cache: false
+          no-cache: false
           pull: false
-          github-token: ${{ secrets.secretgt }}
+          github-token: ${{ secrets.secregt }}
 
   alterar_tag:
     runs-on: ubuntu-latest
@@ -40,29 +39,23 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: julianobcgato/projetocompass  
-          token: ${{ secrets.secretgt }}
+          repository: juliano/projetocompass
+          token: ${{ secrets.SECRET_GT }}
 
       - name: Set run number
         run: echo "RUN_NUMBER=${{ github.run_number }}" >> $GITHUB_ENV
 
       - name: Modify yaml File
         run: |
-          sed -i "s/^      tag: .*/      tag: $RUN_NUMBER/" ./julianoapi/values.yaml  # Caminho para o arquivo values.yaml
+          sed -i "s/^      tag: .*/      tag: $RUN_NUMBER/" ./julianoapi/values.yaml
 
       - name: Cat values.yaml to verify changes
-        run: cat ./julianoapi/values.yaml  
+        run: cat ./julianoapi/values.yaml
 
       - name: Commit and Push Changes
         run: |
           git config user.name "Juliano"
           git config user.email "julianobcgato@gmail.com"
-          git add ./julianoapi/values.yaml  # Caminho para o arquivo values.yaml
+          git add ./julianoapi/values.yaml
           git commit -m "Update image tag in values.yaml"
           git push
-
-
-
-
-
-
