@@ -1,4 +1,4 @@
-name: Build, Push Docker Image and Scan
+name: CI/CD and Scan
 
 on:
   push:
@@ -53,7 +53,7 @@ jobs:
       with:
          context: .
          push: true
-         tags: endi7/fastapi001:v.1.0
+         tags: julianobcgato/projetocompass001:v.1.0
          
   alterar_tag:
     runs-on: ubuntu-latest
