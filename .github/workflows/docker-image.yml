@@ -27,9 +27,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/julianobcgato/projetocompass:${{ github.run_number }} 
+          tags: ghcr.io/${{ secrets.namegt }}/projetocompass:${{ github.run_number }} 
           load: false
-          no-cache: false
+           no-cache: false
           pull: false
           github-token: ${{ secrets.secretgt }}
 
