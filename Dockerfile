@@ -4,6 +4,7 @@ FROM python:3.12
 WORKDIR /app
 
 
+<<<<<<< HEAD
 RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
@@ -11,6 +12,11 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 
 
+=======
+COPY requirements.txt .
+
+
+>>>>>>> 06d2700 (adicionando vulnerabilidades de teste)
 RUN pip install -r requirements.txt
 
 

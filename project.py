@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse
 import subprocess
 import json
 import os
@@ -8,14 +8,12 @@ app = FastAPI()
 
 def run_trivy():
     try:
-        # aqui vai executar o Trivy e salva a saída em um arquivo
         result = subprocess.run([
             "trivy", "fs", ".", 
-            "--severity", "CRITICAL", 
+            "--severity", "HIGH", 
             "--format", "json"
         ], capture_output=True, text=True, check=True)
 
-        # Salvando uum JSON para um arquivo
         with open("trivy-results.json", "w") as file:
             file.write(result.stdout)
         
@@ -28,31 +26,34 @@ def run_trivy():
     with open("trivy-results.json", "r") as file:
         results = json.load(file)
 
-    # contando as vulnerabilidades criticas
-    critical_count = sum(
+    # Debug: Verifique a estrutura do JSON carregado
+    print(json.dumps(results, indent=4))
+
+    # Contagem de vulnerabilidades de severidade HIGH
+    high_count = sum(
         len(result.get("Vulnerabilities", [])) 
         for result in results.get("Results", [])
-        if any(vuln.get("Severity") == "CRITICAL" for vuln in result.get("Vulnerabilities", []))
+        if any(vuln.get("Severity") == "HIGH" for vuln in result.get("Vulnerabilities", []))
     )
     
-    return critical_count
+    return high_count
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
     try:
-        critical_count = run_trivy()
+        high_count = run_trivy()
     except subprocess.CalledProcessError as e:
         raise HTTPException(status_code=500, detail=f"Erro ao executar o Trivy: {str(e)}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro: {str(e)}")
 
-    if critical_count > 10:  # quantidade de linhas criticas
-        result_message = "Danger: Muitas Vulnerabilidades Críticas!"
+    if high_count > 0:
+        result_message = "Danger: Vulnerabilidades de Alta Severidade Encontradas!"
     else:
-        result_message = "Nenhuma vulnerabilidade crítica encontrada."
+        result_message = "Nenhuma vulnerabilidade de alta severidade encontrada."
 
     html_content = f"""
-        html>
+        <html>
         <head>
             <title>Trivy Scan Results</title>
             <style>
@@ -95,7 +96,7 @@ def read_root():
         <body>
             <div class="container">
                 <h1>{result_message}</h1>
-                <p>Critical vulnerabilities count: {critical_count}</p>
+                <p>High vulnerabilities count: {high_count}</p>
                 <form action="/mario" method="get">
                     <button type="submit">Continuar</button>
                 </form>
@@ -112,6 +113,3 @@ def mario_world():
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: str = None):
     return {"item_id": item_id, "q": q}
-
-
-
