@@ -1,8 +1,5 @@
 fastapi
 uvicorn
-<<<<<<< HEAD
-=======
 requests==2.25.1
 flask==1.1.1
->>>>>>> 06d2700 (adicionando vulnerabilidades de teste)
 
