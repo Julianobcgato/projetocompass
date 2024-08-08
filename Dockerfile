@@ -1,7 +1,11 @@
-FROM python:3.8
+FROM python:3.12
 
 
 WORKDIR /app
+
+
+RUN apt-get update && apt-get install -y \
+    && rm -rf /var/lib/apt/lists/*
 
 
 COPY requirements.txt .
