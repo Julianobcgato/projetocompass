@@ -1,7 +1,2 @@
 fastapi
 uvicorn
-HTTPException
-subprocess
-json
-os
-HTMLResponse
