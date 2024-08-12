@@ -27,7 +27,8 @@ jobs:
 
     - name: SonarQube Begin Analysis
       run: |
-        ./.sonar/scanner/dotnet-sonarscanner begin /k:"julianobcgato_dotnetwebsimple" /o:"julianobcgato" /d:sonar.login="${{ secrets.sonartoken }}" /d:sonar.host.url="https://sonarcloud.io"
+        dotnet tool install --global dotnet-sonarscanner
+        dotnet-sonarscanner begin /k:"julianobcgato_dotnetwebsimple" /o:"julianobcgato" /d:sonar.login="${{ secrets.sonartoken }}" /d:sonar.host.url="https://sonarcloud.io"
 
     - name: Build Project
       run: |
@@ -35,4 +36,5 @@ jobs:
 
     - name: SonarQube End Analysis
       run: |
-        ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.sonartoken }}"
+        dotnet-sonarscanner end /d:sonar.login="${{ secrets.sonartoken }}"
+
