@@ -22,9 +22,6 @@ jobs:
           java-package: jdk
           check-latest: false
 
-      - name: Change directory to where POM is located
-        run: cd src
-
       - name: Build and analyze on SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.sonartoken }}
