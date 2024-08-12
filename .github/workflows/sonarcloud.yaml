@@ -1,51 +1,38 @@
-name: SonarCloud
+name: SonarQube Analysis
 
 on:
   push:
     branches:
       - master
-  pull_request:
-    types: [opened, synchronize, reopened]
 
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
+
     steps:
-       - uses: actions/checkout@v3
-         with:
-           fetch-depth: 0
-          
-       - name: Cache SonarCloud packages
-         uses: actions/cache@v3
-         with:
-           path: ~/.sonar/cache
-           key: ${{ runner.os }}-sonar
-           restore-keys: |
-             ${{ runner.os }}-sonar
-              
-       - name: Cache SonarCloud scanner
-         id: cache-sonar-scanner
-         uses: actions/cache@v3
-         with:
-           path: ./.sonar/scanner
-           key: ${{ runner.os }}-sonar-scanner
-           restore-keys: |
-             ${{ runner.os }}-sonar-scanner
-               
-       - name: Install SonarCloud scanner
-         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-         run: |
-           mkdir -p ./.sonar/scanner
-           dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
-         
-       - name: Build and analyze
-         env:
-           GITHUB_TOKEN: ${{ secrets.secret }}
-           SONAR_TOKEN: ${{ secrets.sonartoken }}
-         run: |
-           ./.sonar/scanner/dotnet-sonarscanner begin /k:"julianobcgato_dotnetwebsimple" /o:"julianobcgato" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-           # Adicione aqui o comando de build, por exemplo: dotnet build
-           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.sonartoken }}"
+    - name: Check out repository
+      uses: actions/checkout@v3
 
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.x' # Ajuste para a versão do .NET que você está usando
 
+    - name: Install SonarScanner for MSBuild
+      run: |
+        mkdir -p ~/.sonar/scanner
+        wget -O ~/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
+        unzip ~/sonar-scanner.zip -d ~/.sonar/scanner
+        export PATH=$PATH:~/.sonar/scanner/sonar-scanner-4.8.0.2856-linux/bin
+
+    - name: SonarQube Begin Analysis
+      run: |
+        ./.sonar/scanner/dotnet-sonarscanner begin /k:"julianobcgato_dotnetwebsimple" /o:"julianobcgato" /d:sonar.login="${{ secrets.sonartoken }}" /d:sonar.host.url="https://sonarcloud.io"
+
+    - name: Build Project
+      run: |
+        dotnet build
+
+    - name: SonarQube End Analysis
+      run: |
+        ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.sonartoken }}"
