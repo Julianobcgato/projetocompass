@@ -14,24 +14,24 @@ jobs:
     steps:
        - uses: actions/checkout@v3
          with:
-          fetch-depth: 0
+           fetch-depth: 0
           
        - name: Cache SonarCloud packages
          uses: actions/cache@v3
          with:
-            path: ~/.sonar/cache
-            key: ${{ runner.os }}-sonar
-            restore-keys: |
-              ${{ runner.os }}-sonar
-
+           path: ~/.sonar/cache
+           key: ${{ runner.os }}-sonar
+           restore-keys: |
+             ${{ runner.os }}-sonar
+              
        - name: Cache SonarCloud scanner
          id: cache-sonar-scanner
          uses: actions/cache@v3
          with:
-             path: ./.sonar/scanner
-             key: ${{ runner.os }}-sonar-scanner
-             restore-keys: |
-               ${{ runner.os }}-sonar-scanner
+           path: ./.sonar/scanner
+           key: ${{ runner.os }}-sonar-scanner
+           restore-keys: |
+             ${{ runner.os }}-sonar-scanner
                
        - name: Install SonarCloud scanner
          if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
@@ -47,4 +47,5 @@ jobs:
            ./.sonar/scanner/dotnet-sonarscanner begin /k:"julianobcgato_dotnetwebsimple" /o:"julianobcgato" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
            # Adicione aqui o comando de build, por exemplo: dotnet build
            ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.sonartoken }}"
+
 
