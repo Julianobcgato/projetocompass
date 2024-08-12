@@ -8,29 +8,43 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  sonarcloud:
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+       - uses: actions/checkout@v3
+         with:
+          fetch-depth: 0
+          
+       - name: Cache SonarCloud packages
+         uses: actions/cache@v3
+         with:
+            path: ~/.sonar/cache
+            key: ${{ runner.os }}-sonar
+            restore-keys: |
+              ${{ runner.os }}-sonar
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: 17
-          java-package: jdk
-          check-latest: false
-
-      - name: Build and analyze on SonarCloud
-        env:
-          SONAR_TOKEN: ${{ secrets.sonartoken }}
-        run: |
-          mvn clean install
-          mvn sonar:sonar \
-            -Dsonar.projectKey=projetocompass \
-            -Dsonar.organization=julianobcgato \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${{ secrets.sonartoken }}
-
+       - name: Cache SonarCloud scanner
+         id: cache-sonar-scanner
+         uses: actions/cache@v3
+         with:
+             path: ./.sonar/scanner
+             key: ${{ runner.os }}-sonar-scanner
+             restore-keys: |
+               ${{ runner.os }}-sonar-scanner
+               
+       - name: Install SonarCloud scanner
+         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+         run: |
+           mkdir -p ./.sonar/scanner
+           dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
+         
+       - name: Build and analyze
+         env:
+           GITHUB_TOKEN: ${{ secrets.secret }}
+           SONAR_TOKEN: ${{ secrets.sonartoken }}
+         run: |
+           ./.sonar/scanner/dotnet-sonarscanner begin /k:"julianobcgato_dotnetwebsimple" /o:"julianobcgato" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+           # Adicione aqui o comando de build, por exemplo: dotnet build
+           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.sonartoken }}"
 
