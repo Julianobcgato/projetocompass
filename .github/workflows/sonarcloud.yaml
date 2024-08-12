@@ -29,11 +29,10 @@ jobs:
       - name: Build and analyze on SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.sonartoken }}
-        run: |
-          ./gradlew build
-          ./gradlew sonarqube \
+          run: |
+            mvn clean install
+            mvn sonar:sonar \
             -Dsonar.projectKey=projetocompass \
-            -Dsonar.organization=<sua_organizacao> \
+            -Dsonar.organization=julianobcgato \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$sonartoken
-
