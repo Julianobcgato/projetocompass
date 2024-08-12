@@ -21,18 +21,15 @@ jobs:
           java-version: 17
           java-package: jdk
           check-latest: false
-          server-id: github
-          server-username: ${{ secrets.name }}
-          server-password: ${{ secrets.secret }}
-          overwrite-settings: true
 
       - name: Build and analyze on SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.sonartoken }}
-          run: |
-            mvn clean install
-            mvn sonar:sonar \
+        run: |
+          mvn clean install
+          mvn sonar:sonar \
             -Dsonar.projectKey=projetocompass \
             -Dsonar.organization=julianobcgato \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=$sonartoken
+            -Dsonar.login=${{ secrets.sonartoken }}
+
