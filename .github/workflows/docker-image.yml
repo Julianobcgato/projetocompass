@@ -30,7 +30,7 @@ jobs:
           pip install pytest  # Instala o pytest
 
       - name: Run tests
-        run: pytest projetocompass  # Especifica o diretório projetocompass para os testes
+        run: pytest project.py  # Especifica o arquivo project.py para rodar os testes
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -42,7 +42,6 @@ jobs:
           args: >
             -Dsonar.projectKey=fastapidemonstracao_julianobcgatoprojeto1
             -Dsonar.organization=fastapidemonstracao
-
 
   build-and-push:
     runs-on: ubuntu-22.04
