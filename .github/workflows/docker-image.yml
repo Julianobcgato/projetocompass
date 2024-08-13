@@ -16,32 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest
-
-      - name: Display Python Version
-        run: python --version
-
-      - name: Display Installed Packages
-        run: pip list
-
-      - name: Run tests
-        run: pytest -v project.py
-
+          fetch-depth: 0 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.secret }}
+          GITHUB_TOKEN: ${{ secrets.secret }}  
           SONAR_TOKEN: ${{ secrets.sonartoken }}
         with:
           projectBaseDir: .
