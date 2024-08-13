@@ -30,7 +30,7 @@ jobs:
           pip install pytest  # Instala o pytest
 
       - name: Run tests
-        run: pytest  # Agora, o pytest deve estar disponível
+        run: pytest projetocompass  # Especifica o diretório projetocompass para os testes
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
