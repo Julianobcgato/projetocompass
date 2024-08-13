@@ -25,8 +25,8 @@ jobs:
         with:
           projectBaseDir: .
           args: >
-            -Dsonar.projectKey=julianobcgato_projetocompass
-            -Dsonar.organization=julianobcgato
+            -Dsonar.projectKey=fastapidemonstracao_julianobcgatoprojeto1
+            -Dsonar.organization=fastapidemonstracao
 
   build-and-push:
     runs-on: ubuntu-22.04
