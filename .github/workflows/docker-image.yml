@@ -17,18 +17,17 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'adopt'
-          java-version: '17'
-      
-      - name: Install Gradle
-        uses: gradle/gradle-build-action@v2
 
-      - name: Build project
-        run: gradle build  # Use 'gradle' se você não tiver o wrapper 'gradlew'
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest  # ou outro comando de teste/build para seu projeto
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -40,6 +39,7 @@ jobs:
           args: >
             -Dsonar.projectKey=fastapidemonstracao_julianobcgatoprojeto1
             -Dsonar.organization=fastapidemonstracao
+
 
 
   build-and-push:
