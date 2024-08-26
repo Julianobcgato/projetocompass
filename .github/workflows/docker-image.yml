@@ -73,7 +73,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: julianobcgato/code
-          token: ${{ secrets.segredeops }}
+          token: ${{ secrets.segredops }}
 
       - name: Set run number
         run: echo "RUN_NUMBER=${{ github.run_number }}" >> $GITHUB_ENV
